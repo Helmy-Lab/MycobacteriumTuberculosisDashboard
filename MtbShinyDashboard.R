@@ -251,9 +251,9 @@ combine_se <- function(se_list) {
 # ---- Load datasets ----
 
 se_bei2 <- load_experiment_se(
-  file ="data/SRRAVGS_with_log2FC2.xlsx",
+  file ="Bei2.xlsx",
   sheet = "srr-averages-log2FC",
-  experiment_name = "Bei2",
+  experiment_name = "SRRlog2fc",
   omics_type = "Transcriptomics",
   expression_scale = "Relative"
   #doi = "10.1128/aac.01185-23",
