@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MtB Experiment Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head><body>
+<section id="cover" aria-label="Welcome">
+<video id="cv-vid" muted loop playsinline preload="auto" aria-hidden="true" poster="assets/poster.jpg" data-src="assets/cover.mp4"></video>
+<div class="cv-shade"></div>
+<div class="cv-hero">
+<p class="cv-eyebrow">Mycobacterium tuberculosis &middot; H37Rv</p>
+<h1 class="cv-title">MtB Experiment<br>Dashboard</h1>
+<p class="cv-sub">Transcriptome and proteome explorer</p>
+<button type="button" id="cv-start" class="cv-btn">Start exploring</button>
+<p class="cv-hint">or press <kbd>Enter</kbd></p>
+</div>
+<a href="#cv-about" class="cv-scroll" id="cv-more"><span>About this study</span><i aria-hidden="true"></i></a>
+</section>
+
+<section id="cv-about" aria-labelledby="cv-ah"><div class="cv-wrap">
+<h2 id="cv-ah">About this study</h2>
+<p class="cv-lead">The MtB Experiment Dashboard brings published <i>Mycobacterium tuberculosis</i> (H37Rv) transcriptomic and proteomic datasets together in one place. Instead of opening each study's supplementary tables separately, look up a gene or protein and see how its expression changes across experiments, then compare those changes between studies.</p>
+<p class="cv-lead">At the heart of the project is <b class="cv-key">transcriptional plasticity</b>: the ability of <i>M. tuberculosis</i> to reshape which genes it expresses, and how strongly, as its surroundings change. Placing many conditions side by side shows which genes respond consistently and which respond only to particular challenges.</p>
+
+<h3 class="cv-h3">Five types of condition</h3>
+<div class="cv-types" id="cv-types"></div>
+
+<div class="cv-stats" id="cv-stats"></div>
+
+<div class="cv-globe-row">
+<div class="cv-globe"><canvas id="cv-globe" role="img" aria-label="Interactive globe highlighting the countries of the research teams and of the metadata studies"></canvas><div class="cv-gtip" id="cv-gtip" hidden></div></div>
+<div class="cv-globe-info">
+<h3 class="cv-h3">A global effort</h3>
+<p class="cv-big" id="cv-big"></p>
+<div class="cv-modes" id="cv-modes" role="tablist" aria-label="Globe view"></div>
+<ul class="cv-countries" id="cv-countries"></ul>
+<p class="cv-note">Drag the globe to turn it, or click a country to bring it to the front.</p>
+</div></div>
+
+<h3 class="cv-h3">Datasets</h3>
+<p class="cv-dsum" id="cv-dsum"></p>
+<ul class="cv-ds" id="cv-ds"></ul>
+<div class="cv-meta" id="cv-meta"></div>
+
+<h3 class="cv-h3">How to read the data</h3>
+<div class="cv-read">
+<p><b>Relative</b> datasets report log2 fold changes against a control or reference: positive values mean over-expressed, negative values mean under-expressed.</p>
+<p><b>Absolute</b> datasets report expression or protein abundance directly, so they show how strongly a gene or protein is present rather than whether it changed.</p>
+</div>
+
+<p class="cv-end"><button type="button" class="cv-btn" data-go="ov">Enter the dashboard</button></p>
+</div></section>
+
+<header id="app"><a class="cv-home" href="#cover" title="Back to the cover page">&uarr; Cover</a><p class="hd-title">MtB Experiment Dashboard</p><p>Mycobacterium tuberculosis transcriptome and proteome explorer</p>
+<nav id="nav"></nav></header>
+<main>
+<section class="tab" id="t-ov"><div id="stats"></div>
+<div class="card" style="margin-top:8px"><h2 style="margin-top:0">Differentially expressed genes</h2><p class="mu small">All relative datasets are included; untick any to exclude it. Absolute datasets have no fold change, so they are not part of DEG counts.</p>
+<div class="ovc"><div id="ov-ds"></div><div><label class="f">Minimum |log2FC|</label><input type="number" id="ov-m" value="1" min="0" step="0.25"></div></div><div id="ov-out"></div></div>
+<h2>Experiment summaries</h2><div id="ov-cats"></div></section>
+
+<section class="tab" id="t-gb"><div class="grid"><div class="side"><label class="f">Genes</label><div id="gb-g"></div><label class="f">Conditions</label><div class="chk" id="gb-cp"></div></div><div>
+<details class="sec" open><summary>Gene information</summary><div id="gb-info"></div></details>
+<details class="sec" open><summary>Regulation across conditions (over / under-expressed)</summary><div><p class="mu small">Bars show log2FC for each selected condition: red = over-expressed, blue = under-expressed, grey = within the threshold.</p><label class="f" style="display:inline-block;margin:0 8px 0 0">Threshold |log2FC| &ge;</label><input type="number" id="gb-th" value="1" min="0" step="0.25" style="width:100px"><div id="gb-reg"></div></div></details>
+<details class="sec" open><summary>Relative expression comparison</summary><div><div id="gb-rcn"></div><div id="gb-rc"></div></div></details></div></div></section>
+
+<section class="tab" id="t-rc"><div class="grid"><div class="side"><label class="f">Genes</label><div id="rc-g"></div><label class="f">Conditions</label><div class="chk" id="rc-cp"></div></div><div class="card"><h3>Relative expression comparison</h3><div id="rc-n"></div><p class="mu small">Relative log2FC = Condition A &minus; Condition B (choose A and B from your selected conditions).</p><div id="rc-t"></div></div></div></section>
+
+<section class="tab" id="t-hm"><div class="grid"><div class="side"><label class="f">Genes</label><div id="hm-g"></div><label class="f">Gene selection method</label><div class="radio"><label><input type="radio" name="hmm" value="single" checked> Selected genes</label><label><input type="radio" name="hmm" value="window"> Nearby gene window</label></div><div id="hm-nw" hidden><label class="f">Nearby genes (around the first selected gene)</label><input type="number" id="hm-n" value="20" min="5" max="100"></div><label class="f">Minimum threshold &plusmn; log2FC</label><input type="number" id="hm-t" value="0" min="0" max="3" step="0.25"><label class="f">Conditions</label><div class="chk" id="hm-cp"></div></div><div class="card"><div id="hm" class="plot"></div><p class="mu small">Cells with |log2FC| below the minimum threshold are left blank. Click a cell for gene and publication details. Genes are ordered by Rv number.</p></div></div></section>
+
+<section class="tab" id="t-sc"><div class="grid"><div class="side"><label class="f">Genes to highlight</label><div id="sc-g"></div><label class="f">X axis</label><div class="chk" id="sc-x"></div><label class="f">Y axis</label><div class="chk" id="sc-y"></div><label class="f">X-axis scaling</label><select id="scx"><option value="linear">Linear</option><option value="log2">Log2</option></select><label class="f">Y-axis scaling</label><select id="scy"><option value="linear">Linear</option><option value="log2">Log2</option></select></div><div class="card"><h3>Scatterplot</h3><p class="mu small">Each point is a gene; its X and Y values are the mean of the conditions chosen for each axis. The line is the least-squares linear fit and R&sup2; is how much of the variation in Y it explains.</p><div id="sc" class="plot"></div></div></div></section>
+
+<section class="tab" id="t-vp"><div class="grid"><div class="side"><label class="f">Genes to highlight</label><div id="vp-g"></div><label class="f">Minimum threshold &plusmn; log2FC</label><input type="number" id="vp-t" value="1" min="0" step="0.25"><label class="f">Conditions</label><div class="chk" id="vp-cp"></div><p class="mu small">Only datasets with adjusted P-values are listed.</p></div><div class="card"><h3>Volcano plot</h3><p class="mu small">Over-expressed genes sit on the right, under-expressed on the left. Coloured points have adjusted P &lt; 0.05 and |log2FC| beyond the threshold.</p><div id="vp-n"></div><div id="vp" class="plot"></div></div></div></section>
+
+<section class="tab" id="t-dg"><div class="grid"><div class="side"><label class="f">Focus on specific genes (optional)</label><div id="dg-g"></div><label class="f">Filter DEG direction</label><select id="dg-d"><option>All</option><option>Up</option><option>Down</option></select><label class="f">Minimum |log2FC| magnitude</label><input type="number" id="dg-m" value="1" min="0" max="20" step="0.1"><label style="display:block;margin-top:14px"><input type="checkbox" id="dg-o" checked> Only list genes that meet the threshold in at least one selected condition</label><label class="f">Conditions</label><div class="chk" id="dg-cp"></div></div><div class="card"><h3>Differentially expressed genes</h3><div id="dg-ov"></div><div id="dg-t"></div></div></div></section>
+</main>
+<dialog id="md"></dialog><div id="tip" hidden></div><datalist id="gl"></datalist>
+<script src="assets/globe-lib.js"></script>
+<script src="app.js"></script></body></html>
